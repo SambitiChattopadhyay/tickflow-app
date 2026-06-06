@@ -11,6 +11,12 @@ body {
   font-family: Inter, sans-serif;
 }
 
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .glow-purple {
   position: absolute;
   width: 450px;
@@ -29,18 +35,4 @@ body {
   background: #2563eb;
   filter: blur(180px);
   opacity: 0.15;
-}
-
-.glass {
-  background: rgba(255,255,255,0.03);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.section-title {
-  @apply text-4xl md:text-5xl font-bold text-center;
-}
-
-.section-subtitle {
-  @apply text-center text-gray-400 max-w-2xl mx-auto mt-4;
 }
