@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #070707;
+  color: white;
+  font-family: Inter, sans-serif;
+}
+
+.glow-purple {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 999px;
+  background: #7c3aed;
+  filter: blur(180px);
+  opacity: 0.18;
+}
+
+.glow-blue {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  border-radius: 999px;
+  background: #2563eb;
+  filter: blur(180px);
+  opacity: 0.15;
+}
+
+.glass {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.section-title {
+  @apply text-4xl md:text-5xl font-bold text-center;
+}
+
+.section-subtitle {
+  @apply text-center text-gray-400 max-w-2xl mx-auto mt-4;
+}
