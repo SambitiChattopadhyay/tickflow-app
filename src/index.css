@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 
 html {
   scroll-behavior: smooth;
@@ -35,4 +35,39 @@ body {
   background: #2563eb;
   filter: blur(180px);
   opacity: 0.15;
+} */
+
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  background: #070707;
+  color: white;
+  font-family: Inter, sans-serif;
+}
+
+.glass {
+  background: rgba(255,255,255,.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.glow-purple {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 999px;
+  background: #7c3aed;
+  filter: blur(180px);
+  opacity: .18;
+}
+
+.glow-blue {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  border-radius: 999px;
+  background: #2563eb;
+  filter: blur(180px);
+  opacity: .15;
 }
