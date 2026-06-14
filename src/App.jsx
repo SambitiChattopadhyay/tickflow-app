@@ -1,19 +1,15 @@
+import { Routes, Route } from "react-router-dom";
+
 import LandingPage from "./pages/LandingPage";
+import AuthPage from "./pages/AuthPage";
 
 function App() {
-  return <LandingPage />;
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/auth" element={<AuthPage />} />
+    </Routes>
+  );
 }
 
 export default App;
-
-// function App() {
-//   return (
-//     <div className="bg-red-500 min-h-screen flex items-center justify-center">
-//       <h1 className="text-6xl font-bold text-white">
-//         Tailwind Works!
-//       </h1>
-//     </div>
-//   );
-// }
-
-// export default App;

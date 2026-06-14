@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 
 import {
   FolderKanban,
@@ -9,8 +10,9 @@ import {
 } from "lucide-react";
 
 export default function LandingPage() {
-  return (
-    <>
+  const navigate = useNavigate();
+  return (   //Everything inside return() is what appears on screen.
+    <> //React components must return one parent.instead of div
       <Navbar />
 
       {/* HERO */}
@@ -48,10 +50,12 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-wrap gap-4 mt-10">
-
-              <button className="bg-violet-600 hover:bg-violet-500 px-6 py-4 rounded-xl font-semibold">
-                Get Started
-              </button>
+            <button
+            onClick={() => navigate("/auth")}
+            className="bg-violet-600 hover:bg-violet-500 px-6 py-4 rounded-xl font-semibold"
+            >
+            Get Started
+            </button>
 
               <button className="glass px-6 py-4 rounded-xl">
                 Learn More
@@ -363,7 +367,10 @@ export default function LandingPage() {
             your work with TickFlow.
           </p>
 
-          <button className="bg-violet-600 hover:bg-violet-500 px-8 py-4 rounded-xl mt-10 font-semibold">
+          <button
+          onClick={() => navigate("/auth")}//It allows page navigation without reloading.
+          className="bg-violet-600 hover:bg-violet-500 px-8 py-4 rounded-xl mt-10 font-semibold"
+          >
             Get Started
           </button>
 
@@ -372,6 +379,6 @@ export default function LandingPage() {
       </section>
 
       <Footer />
-    </>
+    </>  //which is a Fragment.
   );
 }
