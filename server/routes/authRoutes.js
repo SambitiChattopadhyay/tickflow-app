@@ -1,6 +1,5 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const router = express.Router();
 // REGISTER
@@ -82,21 +81,21 @@ router.post(
         });
       }
 
-      const token =
-        jwt.sign(
-          {
-            id: user._id,
-          },
-          process.env.JWT_SECRET,
-          {
-            expiresIn: "7d",
-          }
-        );
+      // const token =
+      //   jwt.sign(
+      //     {
+      //       id: user._id,
+      //     },
+      //     process.env.JWT_SECRET,
+      //     {
+      //       expiresIn: "7d",
+      //     }
+      //   );
 
-      res.json({
-        token,
-        email: user.email,
-      });
+     res.json({
+     message: "Login successful",
+     email: user.email,
+     });
 
     } catch (err) {
       res.status(500).json({
