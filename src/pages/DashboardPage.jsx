@@ -40,13 +40,30 @@
 
 // export default DashboardPage;
 import DashboardSidebar from "../components/dashboard/DashboardSidebar";
+import DashboardHeader from "../components/dashboard/DashboardHeader";
+
 
 const DashboardPage = () => {
+  const username = "Samwati";
+
+
   return (
     <div className="min-h-screen bg-slate-100 flex">
+
       <DashboardSidebar />
+
+
+      <main className="flex-1 p-6 lg:p-10">
+
+        <DashboardHeader
+          username={username}
+        />
+
+      </main>
+
     </div>
   );
 };
+
 
 export default DashboardPage;
