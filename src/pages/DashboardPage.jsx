@@ -41,7 +41,7 @@
 // export default DashboardPage;
 import DashboardSidebar from "../components/dashboard/DashboardSidebar";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
-
+import DashboardStats from "../components/dashboard/DashboardStats";
 
 const DashboardPage = () => {
   const username = "Samwati";
@@ -55,9 +55,11 @@ const DashboardPage = () => {
 
       <main className="flex-1 p-6 lg:p-10">
 
-        <DashboardHeader
-          username={username}
-        />
+       <DashboardHeader
+             username={username}
+            />
+
+    <DashboardStats />
 
       </main>
 
