@@ -4,6 +4,12 @@ import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import WorkspacePage from "./pages/WorkspacePage";
 import DashboardPage from "./pages/DashboardPage";
+import TrackerPage from "./pages/TrackerPage";
+import ActivitiesPage from "./pages/ActivitiesPage";
+import ReportsPage from "./pages/ReportsPage";
+import CalendarPage from "./pages/CalendarPage";
+import GoalsPage from "./pages/GoalsPage";
+import SettingsPage from "./pages/SettingsPage";
 
 function App() {
   return (
@@ -12,6 +18,12 @@ function App() {
       <Route path="/auth" element={<AuthPage />} />
        <Route path="/workspace" element={<WorkspacePage />}/>
        <Route path="/dashboard" element={<DashboardPage />}/>
+       <Route path="/tracker" element={<TrackerPage />} />
+       <Route path="/activities" element={<ActivitiesPage />} />
+       <Route path="/reports" element={<ReportsPage />} />
+       <Route path="/calendar" element={<CalendarPage />} />
+       <Route path="/goals" element={<GoalsPage />} />
+       <Route path="/settings" element={<SettingsPage />} />
     </Routes>
   );
 }

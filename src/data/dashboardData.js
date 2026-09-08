@@ -1,5 +1,5 @@
 export const dashboardData = {
-  username: "Samwati",
+  username: "Sambiti",
 
   totalTracked: "6h 45m",
 
