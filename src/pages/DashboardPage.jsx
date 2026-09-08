@@ -42,7 +42,7 @@
 import DashboardSidebar from "../components/dashboard/DashboardSidebar";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import DashboardStats from "../components/dashboard/DashboardStats";
-
+import DashboardCharts from "../components/dashboard/DashboardCharts";
 const DashboardPage = () => {
   const username = "Samwati";
 
@@ -59,7 +59,8 @@ const DashboardPage = () => {
              username={username}
             />
 
-    <DashboardStats />
+        <DashboardStats />
+         <DashboardCharts />
 
       </main>
 
