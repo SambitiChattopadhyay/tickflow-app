@@ -8,7 +8,50 @@ export default function AuthPage() {
 const navigate = useNavigate();
 const [mode, setMode] = useState("signin");
 const [showPassword, setShowPassword] = useState(false);
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");
 const isSignUp = mode === "signup";
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  setError("");
+  setLoading(true);
+
+  try {
+    const endpoint = isSignUp
+      ? "http://localhost:5000/auth/register"
+      : "http://localhost:5000/auth/login";
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Something went wrong");
+    }
+
+    console.log(data);
+
+    navigate("/dashboard");
+
+  } catch (error) {
+    setError(error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 return ( <div className="min-h-screen bg-[#EEF2F6] flex items-center justify-center p-6">
   <div className="w-full max-w-5xl grid lg:grid-cols-2 bg-[#FAFAF8] rounded-3xl overflow-hidden shadow-xl border border-[#D9E0EA]">
     {/* LEFT SIDE */}
@@ -99,7 +142,8 @@ return ( <div className="min-h-screen bg-[#EEF2F6] flex items-center justify-cen
           </button>
         </div>
         {/* FORM */}
-        <form className="space-y-4 mt-7">
+        <form
+        onSubmit={handleSubmit}className="space-y-4 mt-7">
           {isSignUp && (
             <div className="relative">
               <User
@@ -121,6 +165,8 @@ return ( <div className="min-h-screen bg-[#EEF2F6] flex items-center justify-cen
             <input
               type="email"
               placeholder="Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full p-4 pl-12 rounded-xl bg-[#F7F9FC] border border-[#D9E0EA] text-[#243047] placeholder:text-[#657185] outline-none focus:border-[#5964E8]"
             />
           </div>
@@ -133,7 +179,9 @@ return ( <div className="min-h-screen bg-[#EEF2F6] flex items-center justify-cen
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              className="w-full p-4 pl-12 rounded-xl bg-[#F7F9FC] border border-[#D9E0EA] text-[#243047] placeholder:text-[#657185] outline-none focus:border-[#5964E8]"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+             className="w-full p-4 pl-12 rounded-xl bg-[#F7F9FC] border border-[#D9E0EA] text-[#243047] placeholder:text-[#657185] outline-none focus:border-[#5964E8]"
             />
             <button
               type="button"
@@ -145,14 +193,22 @@ return ( <div className="min-h-screen bg-[#EEF2F6] flex items-center justify-cen
                 : <Eye size={18} />}
             </button>
           </div>
+          {error && (
+          <p className="text-sm text-red-500">
+          {error}
+          </p>
+          )}
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-[#5964E8] hover:bg-[#4E58D8] text-white py-4 rounded-xl font-semibold transition"
+            disabled={loading}
+            className="w-full bg-[#5964E8] hover:bg-[#4E58D8] disabled:opacity-60 text-white py-4 rounded-xl font-semibold transition"
           >
-            {isSignUp
-              ? "Create Account"
-              : "Sign In"}
+          {loading
+          ? "Please wait..."
+          : isSignUp
+          ? "Create Account"
+          : "Sign In"}
           </button>
         </form>
         {/* Divider */}
