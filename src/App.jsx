@@ -7,7 +7,6 @@ import DashboardPage from "./pages/DashboardPage";
 import ActivitiesPage from "./pages/ActivitiesPage";
 import ReportsPage from "./pages/ReportsPage";
 import CalendarPage from "./pages/CalendarPage";
-import GoalsPage from "./pages/GoalsPage";
 import SettingsPage from "./pages/SettingsPage";
 
 function App() {
@@ -20,7 +19,6 @@ function App() {
        <Route path="/activities" element={<ActivitiesPage />} />
        <Route path="/reports" element={<ReportsPage />} />
        <Route path="/calendar" element={<CalendarPage />} />
-       <Route path="/goals" element={<GoalsPage />} />
        <Route path="/settings" element={<SettingsPage />} />
     </Routes>
   );

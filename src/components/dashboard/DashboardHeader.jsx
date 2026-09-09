@@ -1,5 +1,4 @@
 import {
-  Bell,
   ChevronDown,
   CalendarDays,
 } from "lucide-react";
@@ -32,7 +31,7 @@ const DashboardHeader = ({ username }) => {
 
           <h1 className="text-4xl font-bold text-slate-900 mt-1">
 
-            {username} 👋
+            {username} 
 
           </h1>
 
@@ -49,17 +48,6 @@ const DashboardHeader = ({ username }) => {
         {/* Right Side */}
 
         <div className="flex items-center gap-5">
-
-
-          {/* Notification */}
-
-          <button className="relative p-2 hover:bg-white rounded-full transition">
-
-            <Bell size={22} />
-
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-
-          </button>
 
 
 

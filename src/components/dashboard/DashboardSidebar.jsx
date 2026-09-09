@@ -5,13 +5,13 @@ import {
   List,
   BarChart3,
   CalendarDays,
-  Target,
   Settings,
   LogOut,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const DashboardSidebar = () => {
+  const navigate = useNavigate();
   const menuItems = [
     {
       name: "Dashboard",
@@ -40,17 +40,26 @@ const DashboardSidebar = () => {
       path: "/calendar",
       icon: <CalendarDays size={20} />,
     },
-    {
-      name: "Goals",
-      path: "/goals",
-      icon: <Target size={20} />,
-    },
+   
     {
       name: "Settings",
      path: "/settings",
       icon: <Settings size={20} />,
     },
   ];
+    //logout function
+    const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:5000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      navigate("/");//sends user to landing page
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };//end
 
   return (
     <aside className="w-64 min-h-screen bg-slate-950 text-white p-6 flex flex-col">
@@ -85,7 +94,10 @@ const DashboardSidebar = () => {
         ))}
       </nav>
 
-      <button className="mt-auto flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition">
+      <button 
+      onClick={handleLogout}//runs handlelogout func
+      className="mt-auto flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition"
+      >
         <LogOut size={20} />
         <span>Logout</span>
       </button>
