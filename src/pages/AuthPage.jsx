@@ -108,7 +108,7 @@ return ( <div className="min-h-screen bg-[#EEF2F6] flex items-center justify-cen
               />
                 <input
                 placeholder="Full Name"
-                className="w-full p-4 pl-12 rounded-xl bg-[#F7F9FC] border border-[#D9E0EA] outline-none focus:border-[#5964E8]"
+                className="w-full p-4 pl-12 rounded-xl bg-[#F7F9FC] border border-[#D9E0EA] text-[#243047] placeholder:text-[#657185] outline-none focus:border-[#5964E8]"
               />
             </div>
           )}
