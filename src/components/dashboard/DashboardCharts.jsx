@@ -11,31 +11,10 @@ import {
 } from "recharts";
 
 
+import { useEffect, useState } from "react";
+
 const DashboardCharts = () => {
-
-  const activityData = [
-    {
-      name: "Study",
-      duration: 150,
-    },
-    {
-      name: "Project",
-      duration: 105,
-    },
-    {
-      name: "Reading",
-      duration: 75,
-    },
-    {
-      name: "Workout",
-      duration: 45,
-    },
-    {
-      name: "Others",
-      duration: 30,
-    },
-  ];
-
+  const [activityData, setActivityData] = useState([]);
 
   const colors = [
     "#2563EB",
@@ -45,12 +24,76 @@ const DashboardCharts = () => {
     "#10B981",
   ];
 
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/activities`,
+          {
+            credentials: "include",
+          }
+        );
+
+        const data = await response.json();
+
+        
+      console.log("Activities:", data.activities);
+
+      // Only use completed activities
+      const completedActivities =
+        data.activities.filter(
+          (activity) =>
+            activity.status === "completed"
+        );
+
+        // Group same activity names together
+      const groupedActivities =
+        completedActivities.reduce(
+          (acc, activity) => {
+            const activityName =
+              activity.name || "Others";
+
+            // Backend duration is in milliseconds
+            const durationInMinutes =
+              activity.duration / 60000;
+
+            if (acc[activityName]) {
+              acc[activityName] +=
+                durationInMinutes;
+            } else {
+              acc[activityName] =
+                durationInMinutes;
+            }
+
+            return acc;
+          },
+          {}
+        );
+
+ // Convert object into chart array
+        const formattedData = Object.entries(
+          groupedActivities
+        ).map(([name, duration]) => ({
+          name,
+          duration: Math.round(duration * 10) / 10,
+          })
+        );
+        setActivityData(formattedData);
+      } catch (error) {
+        console.error(
+          "Failed to fetch chart activities:",
+          error
+        );
+      }
+    };
+
+    fetchActivities();
+  }, []);
 
   const totalMinutes = activityData.reduce(
     (total, activity) => total + activity.duration,
     0
   );
-
 
   return (
     <section className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
