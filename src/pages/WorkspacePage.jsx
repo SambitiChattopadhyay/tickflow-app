@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 
 import TaskCard from "../components/TaskCard";
+const API = import.meta.env.VITE_API_URL;
 
 export default function WorkspacePage() {
   const [taskName, setTaskName] = useState("");
@@ -21,6 +22,326 @@ export default function WorkspacePage() {
 
   // Whether the active timer is running
   const [running, setRunning] = useState(false);
+  const [activityId, setActivityId] = useState(null);
+
+  // =========================
+// LOAD TASKS
+// =========================
+const fetchTasks = async () => {
+  try {
+    const res = await fetch(`${API}/api/tasks`, {
+      credentials: "include",
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error(data.message);
+      return;
+    }
+
+    const formattedTasks = data.tasks.map((task) => ({
+      id: task._id,
+      title: task.title,
+      totalSeconds: Math.floor(task.totalTracked / 1000),
+    }));
+
+    setTasks(formattedTasks);
+
+  } catch (error) {
+    console.error("Failed to load tasks:", error);
+  }
+};
+
+// =========================
+// LOAD CURRENT ACTIVITY
+// =========================
+const loadCurrentActivity = async () => {
+  try {
+    const res = await fetch(
+      `${API}/api/activities/active`,
+      {
+        credentials: "include",
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok || !data.activity) {
+      return;
+    }
+
+    const activity = data.activity;
+
+    setActivityId(activity._id);
+    setActiveTaskId(activity.task._id);
+
+    // Get already saved duration from backend
+    let currentSeconds = Math.floor(
+      activity.duration / 1000
+    );
+
+    // If activity was running, add time passed since last start/resume
+    if (activity.status === "active") {
+      const startedAt = new Date(
+        activity.startTime
+      ).getTime();
+
+      const now = Date.now();
+
+      currentSeconds += Math.floor(
+        (now - startedAt) / 1000
+      );
+    }
+
+    setSeconds(currentSeconds);
+
+    // Start frontend timer only if backend activity is active
+    setRunning(activity.status === "active");
+
+  } catch (error) {
+    console.error(
+      "Failed to load current activity:",
+      error
+    );
+  }
+};
+
+// LOAD DATA WHEN PAGE OPENS
+useEffect(() => {
+  fetchTasks();
+  loadCurrentActivity();
+}, []);
+
+
+  // =========================
+  // ADD TASK
+  // =========================
+
+  const addTask = async () => {
+  if (!taskName.trim()) return;
+
+  try {
+    const res = await fetch(`${API}/api/tasks`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: taskName.trim(),
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error(data.message);
+      return;
+    }
+
+    const newTask = {
+      id: data.task._id,
+      title: data.task.title,
+      totalSeconds: 0,
+    };
+
+    setTasks((prev) => [...prev, newTask]);
+    setTaskName("");
+
+  } catch (error) {
+    console.error("Failed to add task:", error);
+  }
+};
+  // =========================
+  // UPDATE TASK
+  // =========================
+const updateTask = async (taskId, newTitle) => {
+  if (!newTitle.trim()) return;
+
+  try {
+    const res = await fetch(`${API}/api/tasks/${taskId}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: newTitle.trim(),
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error(data.message);
+      return;
+    }
+
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === taskId
+          ? { ...task, title: data.task.title }
+          : task
+      )
+    );
+  } catch (error) {
+    console.error("Failed to update task:", error);
+  }
+};
+
+  // =========================
+  // DELETE TASK
+  // =========================
+const deleteTask = async (taskId) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this task?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch(`${API}/api/tasks/${taskId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error(data.message);
+      return;
+    }
+
+    setTasks((prev) =>
+      prev.filter((task) => task.id !== taskId)
+    );
+  } catch (error) {
+    console.error("Failed to delete task:", error);
+  }
+};
+
+
+//start+resume
+const startTask = async (taskId) => {
+  try {
+    // RESUME the current paused task
+    if (activeTaskId === taskId && activityId && !running) {
+      const res = await fetch(
+        `${API}/api/activities/resume/${activityId}`,
+        {
+          method: "PUT",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) return console.error(data.message);
+
+      setRunning(true);
+      return;
+    }
+    // Prevent starting another task
+    if (activeTaskId) return;
+    // START new activity
+    const res = await fetch(`${API}/api/activities/start`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ taskId }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) return console.error(data.message);
+
+    setActivityId(data.activity._id);
+    setActiveTaskId(taskId);
+    setSeconds(0);
+    setRunning(true);
+
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+  // =========================
+  // PAUSE TASK
+  // =========================
+
+ const pauseTask = async () => {
+  if (!activityId) return;
+
+  try {
+    const res = await fetch(
+      `${API}/api/activities/pause/${activityId}`,
+      {
+        method: "PUT",
+        credentials: "include",
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error(data.message);
+      return;
+    }
+
+    setSeconds(Math.floor(data.activity.duration / 1000));
+    setRunning(false);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+//stop
+const stopTask = async () => {
+  if (!activityId || !activeTaskId) return;
+
+  try {
+    const taskId = activeTaskId;
+
+    const res = await fetch(
+      `${API}/api/activities/stop/${activityId}`,
+      {
+        method: "PUT",
+        credentials: "include",
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error(data.message);
+      return;
+    }
+
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              totalSeconds:
+                task.totalSeconds +
+                Math.floor(data.activity.duration / 1000),
+            }
+          : task
+      )
+    );
+
+    setActivityId(null);
+    setActiveTaskId(null);
+    setSeconds(0);
+    setRunning(false);
+
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
   // =========================
   // TIMER
@@ -39,61 +360,7 @@ export default function WorkspacePage() {
       clearInterval(interval);
     };
   }, [running, activeTaskId]);
-
-  // =========================
-  // ADD TASK
-  // =========================
-
-  const addTask = () => {
-    if (!taskName.trim()) return;
-
-    const newTask = {
-      id: Date.now(),
-      title: taskName.trim(),
-      totalSeconds: 0,
-    };
-
-    setTasks((prev) => [...prev, newTask]);
-
-    setTaskName("");
-  };
-
-  // =========================
-  // UPDATE TASK
-  // =========================
-
-  const updateTask = (taskId, newTitle) => {
-    if (!newTitle.trim()) return;
-
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskId
-          ? {
-              ...task,
-              title: newTitle.trim(),
-            }
-          : task
-      )
-    );
-  };
-
-  // =========================
-  // DELETE TASK
-  // =========================
-
-  const deleteTask = (taskId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this task?"
-    );
-
-    if (!confirmed) return;
-
-    setTasks((prev) =>
-      prev.filter((task) => task.id !== taskId)
-    );
-  };
-
-  // =========================
+   // =========================
   // FORMAT TIME
   // =========================
 
@@ -116,59 +383,6 @@ export default function WorkspacePage() {
       2,
       "0"
     )}`;
-  };
-
-  // =========================
-  // START TASK
-  // =========================
-
-  const startTask = (taskId) => {
-    // Another task is already active
-    if (
-      activeTaskId !== null &&
-      activeTaskId !== taskId
-    ) {
-      return;
-    }
-
-    setActiveTaskId(taskId);
-
-    setRunning(true);
-  };
-
-  // =========================
-  // PAUSE TASK
-  // =========================
-
-  const pauseTask = () => {
-    setRunning(false);
-  };
-
-  // =========================
-  // STOP TASK
-  // =========================
-
-  const stopTask = () => {
-    if (activeTaskId === null) return;
-
-    // Add current session time
-    // to the task's total tracked time
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === activeTaskId
-          ? {
-              ...task,
-              totalSeconds:
-                task.totalSeconds + seconds,
-            }
-          : task
-      )
-    );
-
-    // End session
-    setRunning(false);
-    setSeconds(0);
-    setActiveTaskId(null);
   };
 
   // =========================

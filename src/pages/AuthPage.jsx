@@ -4,6 +4,7 @@ Mail,Lock,User,Eye,EyeOff,ArrowLeft,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import API from "../config";
 export default function AuthPage() {
 const navigate = useNavigate();
 const [mode, setMode] = useState("signin");
@@ -21,8 +22,8 @@ const handleSubmit = async (e) => {
 
   try {
     const endpoint = isSignUp
-      ? "http://localhost:5000/auth/register"
-      : "http://localhost:5000/auth/login";
+  ? `${API}/auth/register`
+  : `${API}/auth/login`;
 
     const response = await fetch(endpoint, {
       method: "POST",
