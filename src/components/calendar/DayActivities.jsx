@@ -8,14 +8,24 @@ export default function DayActivities({
   selectedDate,
   activities,
 }) {
-  const selectedActivities =
-    activities.filter(
-      (activity) =>
-        new Date(
-          activity.startTime
-        ).toDateString() ===
-        selectedDate.toDateString()
-    );
+
+
+console.log("All activities:", activities);
+console.log("Selected date:", selectedDate);
+
+const selectedActivities =
+  activities.filter(
+    (activity) =>
+      new Date(
+        activity.startTime
+      ).toDateString() ===
+      selectedDate.toDateString()
+  );
+
+console.log(
+  "Activities for selected day:",
+  selectedActivities
+);
 
   const formatTime = (date) =>
     new Date(date).toLocaleTimeString(
@@ -26,22 +36,31 @@ export default function DayActivities({
       }
     );
 
-  const formatDuration = (seconds) => {
-    const hours = Math.floor(
-      seconds / 3600
-    );
+  const formatDuration = (milliseconds) => {
+  const totalSeconds = Math.floor(
+    milliseconds / 1000
+  );
 
-    const minutes = Math.floor(
-      (seconds % 3600) / 60
-    );
+  const hours = Math.floor(
+    totalSeconds / 3600
+  );
 
-    if (hours) {
-      return `${hours}h ${minutes}m`;
-    }
+  const minutes = Math.floor(
+    (totalSeconds % 3600) / 60
+  );
 
-    return `${minutes}m`;
-  };
+  const seconds = totalSeconds % 60;
 
+  if (hours) {
+    return `${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  if (minutes) {
+    return `${minutes}m ${seconds}s`;
+  }
+
+  return `${seconds}s`;
+};
   return (
     <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
 

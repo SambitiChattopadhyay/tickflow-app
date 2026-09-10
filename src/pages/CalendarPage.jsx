@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CalendarDays } from "lucide-react";
 
 import CalendarGrid from "../components/calendar/CalendarGrid";
 import DayActivities from "../components/calendar/DayActivities";
-
+const API = import.meta.env.VITE_API_URL;
 export default function CalendarPage() {
   const today = new Date();
 
@@ -18,52 +18,51 @@ export default function CalendarPage() {
 
   const [selectedDate, setSelectedDate] =
     useState(today);
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  //fetch user activities
+ 
+useEffect(() => {
+  const fetchActivities = async () => {
+    try {
+      setLoading(true);
 
+      const response = await fetch(
+        `${API}/api/activities`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
 
-  // Temporary frontend data
-  const activities = [
-    {
-      id: 1,
-      name: "Study React",
-      startTime: "2026-09-09T10:30:00",
-      endTime: "2026-09-09T11:45:00",
-      duration: 4500,
-      status: "completed",
-    },
-    {
-      id: 2,
-      name: "Backend Development",
-      startTime: "2026-09-09T09:00:00",
-      endTime: "2026-09-09T10:10:00",
-      duration: 4200,
-      status: "completed",
-    },
-    {
-      id: 3,
-      name: "Research",
-      startTime: "2026-09-08T18:20:00",
-      endTime: "2026-09-08T19:00:00",
-      duration: 2400,
-      status: "completed",
-    },
-    {
-      id: 4,
-      name: "Project Planning",
-      startTime: "2026-09-07T15:00:00",
-      endTime: "2026-09-07T16:30:00",
-      duration: 5400,
-      status: "completed",
-    },
-    {
-      id: 5,
-      name: "Documentation",
-      startTime: "2026-09-05T12:30:00",
-      endTime: "2026-09-05T13:10:00",
-      duration: 2400,
-      status: "completed",
-    },
-  ];
+      const data = await response.json();
 
+      console.log(
+        "Activities from backend:",
+        data
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+          "Failed to fetch activities"
+        );
+      }
+
+      setActivities(data.activities);
+
+    } catch (error) {
+      console.error(
+        "Error fetching activities:",
+        error
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchActivities();
+}, []);
   return (
     <div className="min-h-screen bg-slate-100">
 
