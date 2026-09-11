@@ -14,7 +14,7 @@ const ActivityTable = () => {
       try {
 
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/activities`,
+          `${import.meta.env.VITE_API_URL}/api/activities/summary/today`,
           {
             method: "GET",
             credentials: "include",
@@ -41,7 +41,7 @@ const ActivityTable = () => {
 
 
         setActivities(
-          data.activities || data
+          data.activities || []
         );
 
 
