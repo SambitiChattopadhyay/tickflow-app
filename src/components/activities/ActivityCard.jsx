@@ -25,16 +25,32 @@ export default function ActivityCard({ activity }) {
     });
   };
 
-  const formatDuration = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+ const formatDuration = (milliseconds) => {
+  const totalSeconds = Math.floor(
+    (milliseconds || 0) / 1000
+  );
 
-    if (hours) return `${hours}h ${minutes}m`;
-    if (minutes) return `${minutes}m ${secs}s`;
+  const hours = Math.floor(
+    totalSeconds / 3600
+  );
 
-    return `${secs}s`;
-  };
+  const minutes = Math.floor(
+    (totalSeconds % 3600) / 60
+  );
+
+  const secs =
+    totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m ${secs}s`;
+  }
+
+  if (minutes > 0) {
+    return `${minutes}m ${secs}s`;
+  }
+
+  return `${secs}s`;
+};
 
   return (
     <div

@@ -6,7 +6,9 @@ import {
 
 export default function ActivityStats({ activities }) {
   const totalSeconds = activities.reduce(
-    (total, activity) => total + activity.duration,
+    (total, activity) => total + Math.floor(
+  activity.duration / 1000
+),
     0
   );
 
@@ -19,13 +21,31 @@ export default function ActivityStats({ activities }) {
       new Date(activity.startTime).toDateString() === today
   ).length;
 
+  
   const formatDuration = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
+  const hours = Math.floor(seconds / 3600);
 
-    return `${hours}h ${minutes}m`;
-  };
+  const minutes = Math.floor(
+    (seconds % 3600) / 60
+  );
 
+  const remainingSeconds =
+    seconds % 60;
+
+  let formattedTime = "";
+
+  if (hours > 0) {
+    formattedTime += `${hours}h `;
+  }
+
+  if (minutes > 0 || hours > 0) {
+    formattedTime += `${minutes}m `;
+  }
+
+  formattedTime += `${remainingSeconds}s`;
+
+  return formattedTime;
+};
   const stats = [
     {
       label: "Total Time",
