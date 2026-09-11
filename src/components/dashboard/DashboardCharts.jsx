@@ -28,24 +28,30 @@ const DashboardCharts = () => {
     const fetchActivities = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/activities`,
+          `${import.meta.env.VITE_API_URL}/api/activities/summary/today`,
           {
             credentials: "include",
           }
         );
+        if (!response.ok) {
+  throw new Error(
+    "Failed to fetch today's activities"
+  );
+}
 
         const data = await response.json();
 
         
-      console.log("Activities:", data.activities);
+      
+console.log(
+  "Today's Chart Activities:",
+  data.activities
+);
 
-      // Only use completed activities
-      const completedActivities =
-        data.activities.filter(
-          (activity) =>
-            activity.status === "completed"
-        );
-
+// Backend already gives today's activities.
+// Use only completed activities for the charts.
+const completedActivities =
+  data.completedActivities || [];
         // Group same activity names together
       const groupedActivities =
         completedActivities.reduce(
@@ -258,9 +264,12 @@ const DashboardCharts = () => {
             {activityData.map(
               (activity, index) => {
 
-                const percentage = Math.round(
-                  (activity.duration / totalMinutes) * 100
-                );
+                const percentage =
+  totalMinutes > 0
+    ? Math.round(
+        (activity.duration / totalMinutes) * 100
+      )
+    : 0;
 
 
                 return (
