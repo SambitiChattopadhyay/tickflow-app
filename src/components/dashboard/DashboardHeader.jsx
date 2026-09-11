@@ -6,13 +6,56 @@ import {
 import { useState } from "react";
 
 
-const DashboardHeader = ({ username }) => {
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
+const DashboardHeader = ({ username, selectedDate, setSelectedDate }) => {
+
+
+  // Get greeting based on current time
+
+  const getGreeting = () => {
+
+    const currentHour = new Date().getHours();
+
+
+    if (currentHour < 12) {
+
+      return "Good morning,";
+
+    }
+
+    else if (currentHour < 18) {
+
+      return "Good afternoon,";
+
+    }
+
+    else {
+
+      return "Good evening,";
+
+    }
+
+  };
+
+
+
+  // Format selected date
+
+  const formattedDate = new Date(
+    selectedDate + "T00:00:00"
+  ).toLocaleDateString(
+    "en-US",
+    {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }
   );
 
 
+
   return (
+
     <header className="mb-8">
 
 
@@ -26,18 +69,22 @@ const DashboardHeader = ({ username }) => {
         <div>
 
           <p className="text-slate-500 text-lg">
-            Good evening,
+
+            {getGreeting()}
+
           </p>
+
 
           <h1 className="text-4xl font-bold text-slate-900 mt-1">
 
-            {username} 
+            {username || "User"}
 
           </h1>
 
+
           <p className="text-slate-500 mt-2">
 
-            Here's how you spent your time today.
+            Here's how you spent your time on {formattedDate}.
 
           </p>
 
@@ -50,25 +97,30 @@ const DashboardHeader = ({ username }) => {
         <div className="flex items-center gap-5">
 
 
-
           {/* Profile */}
 
           <button className="flex items-center gap-3 bg-white px-4 py-3 rounded-xl shadow-sm hover:shadow-md transition">
 
+
             <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
 
-              {username.charAt(0).toUpperCase()}
+              {username
+                ? username.charAt(0).toUpperCase()
+                : "U"}
 
             </div>
 
 
+
             <div className="text-left">
+
 
               <p className="font-medium text-slate-800">
 
-                {username}
+                {username || "User"}
 
               </p>
+
 
               <p className="text-xs text-slate-500">
 
@@ -76,7 +128,9 @@ const DashboardHeader = ({ username }) => {
 
               </p>
 
+
             </div>
+
 
 
             <ChevronDown
@@ -84,10 +138,12 @@ const DashboardHeader = ({ username }) => {
               className="text-slate-500"
             />
 
+
           </button>
 
 
         </div>
+
 
       </div>
 
@@ -97,12 +153,15 @@ const DashboardHeader = ({ username }) => {
 
       <div className="flex justify-end mt-6">
 
+
         <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-xl shadow-sm">
+
 
           <CalendarDays
             size={20}
             className="text-slate-600"
           />
+
 
           <input
             type="date"
@@ -113,13 +172,17 @@ const DashboardHeader = ({ username }) => {
             className="outline-none text-slate-700"
           />
 
+
         </div>
+
 
       </div>
 
 
     </header>
+
   );
+
 };
 
 

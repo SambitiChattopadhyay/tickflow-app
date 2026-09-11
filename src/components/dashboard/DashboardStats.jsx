@@ -29,17 +29,17 @@ const DashboardStats = () => {
 
 
         const [
-          activitiesResponse,
+          // activitiesResponse,
           dailySummaryResponse,
           activeActivityResponse,
         ] = await Promise.all([
 
-          fetch(
-            `${apiUrl}/api/activities`,
-            {
-              credentials: "include",
-            }
-          ),
+          // fetch(
+          //   `${apiUrl}/api/activities`,
+          //   {
+          //     credentials: "include",
+          //   }
+          // ),
 
           fetch(
             `${apiUrl}/api/activities/summary/today`,
@@ -58,8 +58,8 @@ const DashboardStats = () => {
         ]);
 
 
-        const activitiesData =
-          await activitiesResponse.json();
+        // const activitiesData =
+        //   await activitiesResponse.json();
 
         const dailySummaryData =
           await dailySummaryResponse.json();
@@ -69,9 +69,9 @@ const DashboardStats = () => {
 
 
         console.log(
-          "Activities:",
-          activitiesData
-        );
+  "Today's Activities:",
+  dailySummaryData.activities
+);
 
         console.log(
           "Daily Summary:",
@@ -121,16 +121,20 @@ if (minutes > 0 || hours > 0) {
 
 formattedTime += `${seconds}s`;
 
+        // const activities =
+        //   activitiesData.activities || [];
+
+
+        // const completedActivities =
+        //   activities.filter(
+        //     (activity) =>
+        //       activity.status === "completed"
+        //   );
         const activities =
-          activitiesData.activities || [];
+  dailySummaryData.activities || [];
 
-
-        const completedActivities =
-          activities.filter(
-            (activity) =>
-              activity.status === "completed"
-          );
-
+const completedActivities =
+  dailySummaryData.completedActivities || [];
 
         const currentActivity =
           activeActivityData.activity;
